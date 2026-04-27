@@ -426,6 +426,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 value={searchLocation}
                 onChangeText={setSearchLocation}
               />
+              <TouchableOpacity onPress={() => navigation.navigate("AllRestaurants", { searchQuery: "" })}>
+                <Text style={styles.locationIcon}>📍</Text>
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
@@ -711,6 +714,10 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     color: "#333",
+  },
+  locationIcon: {
+    fontSize: 20,
+    paddingHorizontal: 10,
   },
   searchBtn: {
     backgroundColor: "#dc2626",

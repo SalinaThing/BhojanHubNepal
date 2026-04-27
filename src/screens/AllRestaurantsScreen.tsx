@@ -68,6 +68,21 @@ export default function AllRestaurantsScreen() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
+  const [userLocation, setUserLocation] = useState<LocationCoords | null>(null);
+
+  const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
 
   const categories = [
     "All Categories",
@@ -217,7 +232,22 @@ export default function AllRestaurantsScreen() {
     setSearch(q);
     setCategory(cat);
 
-    const filteredResult = initialData.filter((r) => {
+    // Try to get user location for distance sorting
+    Geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+        setUserLocation(coords);
+        applyFilters(q, cat, coords);
+      },
+      () => {
+        applyFilters(q, cat, null);
+      },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
+  }, [route.params]);
+
+  const applyFilters = (q: string, cat: string, uLoc: LocationCoords | null) => {
+    let result = initialData.filter((r) => {
       const matchSearch = q ? (
         r.title.toLowerCase().includes(q.toLowerCase()) ||
         r.address.toLowerCase().includes(q.toLowerCase()) ||
@@ -229,9 +259,19 @@ export default function AllRestaurantsScreen() {
       return matchSearch && matchCategory;
     });
 
-    setFiltered(filteredResult);
+    if (uLoc) {
+      result = result.sort((a, b) => {
+        if (!a.latitude || !a.longitude) return 1;
+        if (!b.latitude || !b.longitude) return -1;
+        const distA = getDistance(uLoc.latitude, uLoc.longitude, a.latitude, a.longitude);
+        const distB = getDistance(uLoc.latitude, uLoc.longitude, b.latitude, b.longitude);
+        return distA - distB;
+      });
+    }
+
+    setFiltered(result);
     setLoading(false);
-  }, [route.params]);
+  };
 
   const handleSearch = () => {
     const result = restaurants.filter(
