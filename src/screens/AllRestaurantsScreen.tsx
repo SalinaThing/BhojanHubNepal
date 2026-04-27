@@ -230,51 +230,51 @@ export default function AllRestaurantsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Search Restaurants</Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.title}>Search Restaurants</Text>
 
-      <View style={styles.controls}>
-        <Picker
-          selectedValue={category}
-          onValueChange={setCategory}
-          style={styles.picker}
-        >
-          {categories.map((c) => (
-            <Picker.Item label={c} value={c} key={c} />
-          ))}
-        </Picker>
+        <View style={styles.controls}>
+          <Picker
+            selectedValue={category}
+            onValueChange={setCategory}
+            style={styles.picker}
+          >
+            {categories.map((c) => (
+              <Picker.Item label={c} value={c} key={c} />
+            ))}
+          </Picker>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Search food or restaurant"
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Search food or restaurant"
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
 
-      <View style={styles.buttons}>
-        <TouchableOpacity
-          style={[styles.btn, { backgroundColor: "#dc2626" }]}
-          onPress={handleNearMe}
-        >
-          <Text style={styles.btnText}>📍 Near Me</Text>
-        </TouchableOpacity>
+        <View style={styles.buttons}>
+          <TouchableOpacity
+            style={[styles.btn, { backgroundColor: "#dc2626" }]}
+            onPress={handleNearMe}
+          >
+            <Text style={styles.btnText}>📍 Near Me</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.btn, { backgroundColor: "#2563eb" }]}
-          onPress={handleSearch}
-        >
-          <Text style={styles.btnText}>Search</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.btn, { backgroundColor: "#2563eb" }]}
+            onPress={handleSearch}
+          >
+            <Text style={styles.btnText}>Search</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.btn, { backgroundColor: "#555" }]}
-          onPress={handleReset}
-        >
-          <Text style={styles.btnText}>Reset</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={[styles.btn, { backgroundColor: "#555" }]}
+            onPress={handleReset}
+          >
+            <Text style={styles.btnText}>Reset</Text>
+          </TouchableOpacity>
+        </View>
 
-      <ScrollView>
         {filtered.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No restaurants found matching your criteria.</Text>
