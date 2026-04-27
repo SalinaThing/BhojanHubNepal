@@ -25,6 +25,11 @@ type NavigationProp = NativeStackNavigationProp<
   "AllRestaurants"
 >;
 
+type LocationCoords = {
+  latitude: number;
+  longitude: number;
+};
+
 export type Restaurant = {
   id: string;
   title: string;
@@ -41,12 +46,135 @@ interface RestaurantItemProps {
   onPress: (restaurant: Restaurant) => void;
 }
 
+const ALL_RESTAURANTS_DATA: Restaurant[] = [
+  {
+    id: "1",
+    title: "Bhojan Griha",
+    address: "Dillibazar, Kathmandu",
+    contact_phone: "01-4223456",
+    category: "Nepali",
+    latitude: 27.708,
+    longitude: 85.323,
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "2",
+    title: "Pizza Italia",
+    address: "Thamel, Kathmandu",
+    contact_phone: "01-4412345",
+    category: "Italian",
+    latitude: 27.715,
+    longitude: 85.312,
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "3",
+    title: "Dragon Chinese",
+    address: "Chinatown Road, Kathmandu",
+    contact_phone: "01-4229876",
+    category: "Chinese",
+    latitude: 27.702,
+    longitude: 85.315,
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "4",
+    title: "Spice India",
+    address: "Curry Lane, Lalitpur",
+    contact_phone: "01-5556677",
+    category: "Indian",
+    latitude: 27.678,
+    longitude: 85.318,
+    image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "5",
+    title: "Tokyo Sushi",
+    address: "Sushi Street, Kathmandu",
+    contact_phone: "01-4422334",
+    category: "Japanese",
+    latitude: 27.712,
+    longitude: 85.325,
+    image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "6",
+    title: "Himalayan Java",
+    address: "Heritage Plaza, Kathmandu",
+    contact_phone: "01-4433221",
+    category: "Cafe",
+    latitude: 27.705,
+    longitude: 85.320,
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "7",
+    title: "Taco Fiesta",
+    address: "Mexican Blvd, Kathmandu",
+    contact_phone: "01-4455667",
+    category: "Mexican",
+    latitude: 27.718,
+    longitude: 85.330,
+    image: "https://images.unsplash.com/photo-1565299585323-38174c13fae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "8",
+    title: "Sweet Tooth",
+    address: "Dessert Lane, Lalitpur",
+    contact_phone: "01-5511223",
+    category: "Desserts",
+    latitude: 27.682,
+    longitude: 85.310,
+    image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "9",
+    title: "Burger Palace",
+    address: "Fast Food Court, Kathmandu",
+    contact_phone: "01-4221122",
+    category: "Fast Food",
+    latitude: 27.700,
+    longitude: 85.305,
+    image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "10",
+    title: "Korea Town BBQ",
+    address: "Thamel, Kathmandu",
+    contact_phone: "01-4411122",
+    category: "Japanese",
+    latitude: 27.714,
+    longitude: 85.311,
+    image: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "11",
+    title: "The Baker's Hub",
+    address: "Bakery Street, Lalitpur",
+    contact_phone: "01-5544332",
+    category: "Bakery",
+    latitude: 27.675,
+    longitude: 85.320,
+    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  },
+  {
+    id: "12",
+    title: "Riverside Fine Dine",
+    address: "Waterfront, Pokhara",
+    contact_phone: "061-445566",
+    category: "Continental",
+    latitude: 28.209,
+    longitude: 83.958,
+    image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+  }
+];
+
 const RestaurantItem: React.FC<RestaurantItemProps> = ({
   restaurant,
   onPress,
 }) => (
   <View style={styles.cardWrapper}>
-<TouchableOpacity onPress={() => onPress(restaurant)}>
+    <TouchableOpacity onPress={() => onPress(restaurant)}>
       {restaurant.image && (
         <Image source={{ uri: restaurant.image }} style={styles.cardImage} />
       )}
@@ -100,130 +228,7 @@ export default function AllRestaurantsScreen() {
   ];
 
   useEffect(() => {
-    const initialData: Restaurant[] = [
-      {
-        id: "1",
-        title: "Bhojan Griha",
-        address: "Dillibazar, Kathmandu",
-        contact_phone: "01-4223456",
-        category: "Nepali",
-        latitude: 27.708,
-        longitude: 85.323,
-        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "2",
-        title: "Pizza Italia",
-        address: "Thamel, Kathmandu",
-        contact_phone: "01-4412345",
-        category: "Italian",
-        latitude: 27.715,
-        longitude: 85.312,
-        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "3",
-        title: "Dragon Chinese",
-        address: "Chinatown Road, Kathmandu",
-        contact_phone: "01-4229876",
-        category: "Chinese",
-        latitude: 27.702,
-        longitude: 85.315,
-        image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "4",
-        title: "Spice India",
-        address: "Curry Lane, Lalitpur",
-        contact_phone: "01-5556677",
-        category: "Indian",
-        latitude: 27.678,
-        longitude: 85.318,
-        image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "5",
-        title: "Tokyo Sushi",
-        address: "Sushi Street, Kathmandu",
-        contact_phone: "01-4422334",
-        category: "Japanese",
-        latitude: 27.712,
-        longitude: 85.325,
-        image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "6",
-        title: "Himalayan Java",
-        address: "Heritage Plaza, Kathmandu",
-        contact_phone: "01-4433221",
-        category: "Cafe",
-        latitude: 27.705,
-        longitude: 85.320,
-        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "7",
-        title: "Taco Fiesta",
-        address: "Mexican Blvd, Kathmandu",
-        contact_phone: "01-4455667",
-        category: "Mexican",
-        latitude: 27.718,
-        longitude: 85.330,
-        image: "https://images.unsplash.com/photo-1565299585323-38174c13fae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "8",
-        title: "Sweet Tooth",
-        address: "Dessert Lane, Lalitpur",
-        contact_phone: "01-5511223",
-        category: "Desserts",
-        latitude: 27.682,
-        longitude: 85.310,
-        image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "9",
-        title: "Burger Palace",
-        address: "Fast Food Court, Kathmandu",
-        contact_phone: "01-4221122",
-        category: "Fast Food",
-        latitude: 27.700,
-        longitude: 85.305,
-        image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "10",
-        title: "Korea Town BBQ",
-        address: "Thamel, Kathmandu",
-        contact_phone: "01-4411122",
-        category: "Japanese", // Using Japanese as a proxy for Korean since we don't have a Korean cat yet
-        latitude: 27.714,
-        longitude: 85.311,
-        image: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "11",
-        title: "The Baker's Hub",
-        address: "Bakery Street, Lalitpur",
-        contact_phone: "01-5544332",
-        category: "Bakery",
-        latitude: 27.675,
-        longitude: 85.320,
-        image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "12",
-        title: "Riverside Fine Dine",
-        address: "Waterfront, Pokhara",
-        contact_phone: "061-445566",
-        category: "Continental",
-        latitude: 28.209,
-        longitude: 83.958,
-        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      }
-    ];
-
-    setRestaurants(initialData);
+    setRestaurants(ALL_RESTAURANTS_DATA);
 
     // Apply initial filters if params exist
     const q = route.params?.searchQuery || "";
@@ -249,7 +254,7 @@ export default function AllRestaurantsScreen() {
   }, [route.params]);
 
   const updateResults = (searchText: string, selectedCat: string, uLoc: LocationCoords | null) => {
-    let result = initialData.filter((r) => {
+    let result = ALL_RESTAURANTS_DATA.filter((r) => {
       const matchSearch = searchText ? (
         r.title.toLowerCase().includes(searchText.toLowerCase()) ||
         r.address.toLowerCase().includes(searchText.toLowerCase()) ||
