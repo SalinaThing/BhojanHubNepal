@@ -237,24 +237,26 @@ export default function AllRestaurantsScreen() {
       (pos) => {
         const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
         setUserLocation(coords);
-        applyFilters(q, cat, coords);
+        updateResults(q, cat, coords);
+        setLoading(false);
       },
       () => {
-        applyFilters(q, cat, null);
+        updateResults(q, cat, null);
+        setLoading(false);
       },
       { enableHighAccuracy: true, timeout: 5000 }
     );
   }, [route.params]);
 
-  const applyFilters = (q: string, cat: string, uLoc: LocationCoords | null) => {
+  const updateResults = (searchText: string, selectedCat: string, uLoc: LocationCoords | null) => {
     let result = initialData.filter((r) => {
-      const matchSearch = q ? (
-        r.title.toLowerCase().includes(q.toLowerCase()) ||
-        r.address.toLowerCase().includes(q.toLowerCase()) ||
-        r.category.toLowerCase().includes(q.toLowerCase())
+      const matchSearch = searchText ? (
+        r.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        r.address.toLowerCase().includes(searchText.toLowerCase()) ||
+        r.category.toLowerCase().includes(searchText.toLowerCase())
       ) : true;
 
-      const matchCategory = cat === "All Categories" || r.category === cat;
+      const matchCategory = selectedCat === "All Categories" || r.category === selectedCat;
 
       return matchSearch && matchCategory;
     });
@@ -270,16 +272,10 @@ export default function AllRestaurantsScreen() {
     }
 
     setFiltered(result);
-    setLoading(false);
   };
 
   const handleSearch = () => {
-    const result = restaurants.filter(
-      (r) =>
-        r.title.toLowerCase().includes(search.toLowerCase()) &&
-        (category === "All Categories" || r.category === category)
-    );
-    setFiltered(result);
+    updateResults(search, category, userLocation);
   };
 
   const handleReset = () => {
@@ -289,33 +285,32 @@ export default function AllRestaurantsScreen() {
   };
 
   const handleNearMe = async () => {
-    if (Platform.OS === "android") {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Alert.alert("Location permission required");
-        return;
-      }
-    }
-
+    setLoading(true);
     Geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        const uLoc = { latitude, longitude };
+        setUserLocation(uLoc);
 
+        // Filter for restaurants within 5km
         const nearby = restaurants.filter((r) => {
           if (!r.latitude || !r.longitude) return false;
-          const dist =
-            Math.abs(r.latitude - latitude) +
-            Math.abs(r.longitude - longitude);
-          return dist < 0.5;
+          return getDistance(latitude, longitude, r.latitude, r.longitude) < 5;
+        }).sort((a, b) => {
+          const distA = getDistance(latitude, longitude, a.latitude!, a.longitude!);
+          const distB = getDistance(latitude, longitude, b.latitude!, b.longitude!);
+          return distA - distB;
         });
 
         setFiltered(nearby);
+        setLoading(false);
         if (nearby.length === 0)
-          Alert.alert("No nearby restaurants found");
+          Alert.alert("No nearby restaurants found within 5km.");
       },
-      () => Alert.alert("Location error"),
+      () => {
+        setLoading(false);
+        Alert.alert("Location error", "Could not get your current location.");
+      },
       { enableHighAccuracy: true }
     );
   };
@@ -383,13 +378,22 @@ export default function AllRestaurantsScreen() {
           </TouchableOpacity>
         </View>
 
-        {filtered.map((item) => (
-          <RestaurantItem
-            key={item.id}
-            restaurant={item}
-            onPress={openRestaurant}
-          />
-        ))}
+        {filtered.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No restaurants found matching your criteria.</Text>
+            <TouchableOpacity onPress={handleReset} style={styles.resetBtn}>
+              <Text style={styles.resetBtnText}>Clear all filters</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          filtered.map((item) => (
+            <RestaurantItem
+              key={item.id}
+              restaurant={item}
+              onPress={openRestaurant}
+            />
+          ))
+        )}
       </ScrollView>
     </View>
   );
@@ -438,4 +442,24 @@ const styles = StyleSheet.create({
   },
   cardText: { fontSize: 14, color: "#444" },
   viewMore: { marginTop: 8, color: "#2563eb", fontWeight: "600" },
+  emptyContainer: {
+    padding: 40,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  resetBtn: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#dc2626",
+    borderRadius: 5,
+  },
+  resetBtnText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
 });
