@@ -24,19 +24,6 @@ interface HomeScreenProps {
   navigation: any;
 }
 
-type Restaurant = {
-  id: string;
-  title: string;
-  address: string;
-  contact_phone: string;
-  category: string;
-  rating: number;
-  deliveryTime: string;
-  priceRange: string;
-  image: string | null;
-  distance?: number;
-};
-
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All Categories");
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
@@ -78,11 +65,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           Geolocation.getCurrentPosition(
             (pos) => {
               const { latitude, longitude } = pos.coords;
-              const sorted = [...ALL_RESTAURANTS_DATA].sort((a, b) => {
-                const distA = getDistance(latitude, longitude, a.latitude, a.longitude);
-                const distB = getDistance(latitude, longitude, b.latitude, b.longitude);
-                return distA - distB;
-              });
+              const withDistance = ALL_RESTAURANTS_DATA.map(r => ({
+                ...r,
+                distance: getDistance(latitude, longitude, r.latitude, r.longitude)
+              }));
+              const sorted = withDistance.sort((a, b) => a.distance - b.distance);
               setNearbyRestaurants(sorted.slice(0, 6)); // Show top 6 nearest
               setLoadingLocation(false);
             },

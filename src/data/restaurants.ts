@@ -11,6 +11,7 @@ export type Restaurant = {
   latitude: number;
   longitude: number;
   description?: string;
+  distance?: number;
 };
 
 export const ALL_RESTAURANTS_DATA: Restaurant[] = [

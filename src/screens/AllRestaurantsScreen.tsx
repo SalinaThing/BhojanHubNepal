@@ -24,6 +24,8 @@ type NavigationProp = NativeStackNavigationProp<
   "AllRestaurants"
 >;
 
+type AllRestaurantsRouteProp = RouteProp<RootStackParamList, "AllRestaurants">;
+
 type LocationCoords = {
   latitude: number;
   longitude: number;
@@ -45,6 +47,9 @@ const RestaurantItem: React.FC<RestaurantItemProps> = ({
       )}
       <Text style={styles.cardTitle}>{restaurant.title}</Text>
       <Text style={styles.cardText}>📍 {restaurant.address}</Text>
+      {restaurant.distance !== undefined && (
+        <Text style={styles.cardText}>📏 {restaurant.distance.toFixed(1)} km away</Text>
+      )}
       <Text style={styles.cardText}>📞 {restaurant.contact_phone}</Text>
       <Text style={styles.cardText}>🏷️ {restaurant.category}</Text>
       <Text style={styles.viewMore}>View Menu</Text>
@@ -157,19 +162,10 @@ export default function AllRestaurantsScreen() {
     });
 
     if (uLoc && typeof uLoc.latitude === 'number' && typeof uLoc.longitude === 'number') {
-      result = result.sort((a, b) => {
-        const latA = a.latitude;
-        const lonA = a.longitude;
-        const latB = b.latitude;
-        const lonB = b.longitude;
-
-        if (typeof latA !== 'number' || typeof lonA !== 'number') return 1;
-        if (typeof latB !== 'number' || typeof lonB !== 'number') return -1;
-
-        const distA = getDistance(uLoc.latitude, uLoc.longitude, latA, lonA);
-        const distB = getDistance(uLoc.latitude, uLoc.longitude, latB, lonB);
-        return distA - distB;
-      });
+      result = result.map(r => ({
+        ...r,
+        distance: getDistance(uLoc.latitude, uLoc.longitude, r.latitude, r.longitude)
+      })).sort((a, b) => (a.distance || 0) - (b.distance || 0));
     }
 
     setFiltered(result);
