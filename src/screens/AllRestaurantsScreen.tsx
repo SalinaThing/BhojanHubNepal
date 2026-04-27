@@ -11,9 +11,7 @@ import {
   PermissionsAndroid,
   Platform,
   Image,
-  Dimensions,
 } from "react-native";
-import MapView, { Marker, Callout } from "react-native-maps";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -69,7 +67,6 @@ export default function AllRestaurantsScreen() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [userLocation, setUserLocation] = useState<LocationCoords | null>(null);
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // Radius of the earth in km
@@ -277,76 +274,24 @@ export default function AllRestaurantsScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.viewToggle}>
-        <TouchableOpacity 
-          style={[styles.toggleBtn, viewMode === 'list' && styles.activeToggle]}
-          onPress={() => setViewMode('list')}
-        >
-          <Text style={[styles.toggleText, viewMode === 'list' && styles.activeToggleText]}>📋 List</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.toggleBtn, viewMode === 'map' && styles.activeToggle]}
-          onPress={() => setViewMode('map')}
-        >
-          <Text style={[styles.toggleText, viewMode === 'map' && styles.activeToggleText]}>🗺️ Map</Text>
-        </TouchableOpacity>
-      </View>
-
-      {viewMode === 'list' ? (
-        <ScrollView>
-          {filtered.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No restaurants found matching your criteria.</Text>
-              <TouchableOpacity onPress={handleReset} style={styles.resetBtn}>
-                <Text style={styles.resetBtnText}>Clear all filters</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            filtered.map((item) => (
-              <RestaurantItem
-                key={item.id}
-                restaurant={item}
-                onPress={openRestaurant}
-              />
-            ))
-          )}
-        </ScrollView>
-      ) : (
-        <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: userLocation?.latitude || 27.7172,
-              longitude: userLocation?.longitude || 85.324,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05,
-            }}
-            showsUserLocation={true}
-          >
-            {filtered.map((item) => (
-              <Marker
-                key={item.id}
-                coordinate={{
-                  latitude: item.latitude,
-                  longitude: item.longitude,
-                }}
-                title={item.title}
-                description={item.category}
-              >
-                <Callout
-                  onPress={() => openRestaurant(item)}
-                >
-                  <View style={styles.callout}>
-                    <Text style={styles.calloutTitle}>{item.title}</Text>
-                    <Text style={styles.calloutDesc}>{item.category}</Text>
-                    <Text style={styles.calloutBtn}>View Details</Text>
-                  </View>
-                </Callout>
-              </Marker>
-            ))}
-          </MapView>
-        </View>
-      )}
+      <ScrollView>
+        {filtered.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No restaurants found matching your criteria.</Text>
+            <TouchableOpacity onPress={handleReset} style={styles.resetBtn}>
+              <Text style={styles.resetBtnText}>Clear all filters</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          filtered.map((item) => (
+            <RestaurantItem
+              key={item.id}
+              restaurant={item}
+              onPress={openRestaurant}
+            />
+          ))
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -413,70 +358,5 @@ const styles = StyleSheet.create({
   resetBtnText: {
     color: "#fff",
     fontWeight: "600",
-  },
-  viewToggle: {
-    flexDirection: 'row',
-    backgroundColor: '#f1f5f9',
-    margin: 15,
-    borderRadius: 12,
-    padding: 4,
-  },
-  toggleBtn: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  activeToggle: {
-    backgroundColor: '#fff',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  toggleText: {
-    fontSize: 14,
-    color: '#64748b',
-    fontWeight: '600',
-  },
-  activeToggleText: {
-    color: '#dc2626',
-  },
-  mapContainer: {
-    flex: 1,
-    margin: 15,
-    marginTop: 0,
-    borderRadius: 20,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    minHeight: 400,
-  },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-  callout: {
-    padding: 10,
-    width: 150,
-    alignItems: 'center',
-  },
-  calloutTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1e293b',
-    marginBottom: 2,
-  },
-  calloutDesc: {
-    fontSize: 12,
-    color: '#64748b',
-    marginBottom: 5,
-  },
-  calloutBtn: {
-    fontSize: 12,
-    color: '#dc2626',
-    fontWeight: '600',
-    textDecorationLine: 'underline',
   },
 });
