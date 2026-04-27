@@ -132,7 +132,7 @@ export default function AllRestaurantsScreen() {
               updateResults(q, cat, null);
               setLoading(false);
             },
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000, forceRequestLocation: true }
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, forceRequestLocation: true }
           );
         } else {
           updateResults(q, cat, null);

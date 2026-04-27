@@ -50,48 +50,60 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return R * c;
   };
 
-  useEffect(() => {
-    const fetchLocationAndSort = async () => {
-      try {
-        let hasPermission = true;
-        if (Platform.OS === "android") {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-          );
-          hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
-        }
+  const fetchLocationAndSort = async () => {
+    try {
+      let hasPermission = true;
+      if (Platform.OS === "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
+      }
 
-        if (hasPermission) {
-          Geolocation.getCurrentPosition(
-            (pos) => {
-              const { latitude, longitude } = pos.coords;
-              const withDistance = ALL_RESTAURANTS_DATA.map(r => ({
-                ...r,
-                distance: getDistance(latitude, longitude, r.latitude, r.longitude)
-              }));
-              const sorted = withDistance.sort((a, b) => a.distance - b.distance);
-              setNearbyRestaurants(sorted.slice(0, 6)); // Show top 6 nearest
-              setLoadingLocation(false);
-            },
-            () => {
-              // On error, just show the default list
-              setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
-              setLoadingLocation(false);
-            },
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 }
-          );
-        } else {
-          setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
-          setLoadingLocation(false);
-        }
-      } catch (err) {
+      if (hasPermission) {
+        Geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            const withDistance = ALL_RESTAURANTS_DATA.map(r => ({
+              ...r,
+              distance: getDistance(latitude, longitude, r.latitude, r.longitude)
+            }));
+            const sorted = withDistance.sort((a, b) => a.distance - b.distance);
+            setNearbyRestaurants(sorted.slice(0, 6)); // Show top 6 nearest
+            setLoadingLocation(false);
+          },
+          (error) => {
+            console.log("Location Error:", error);
+            // On error, just show the default list
+            setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
+            setLoadingLocation(false);
+          },
+          { 
+            enableHighAccuracy: true, 
+            timeout: 15000, 
+            maximumAge: 10000,
+            forceRequestLocation: true,
+            showLocationDialog: true 
+          }
+        );
+      } else {
         setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
         setLoadingLocation(false);
       }
-    };
+    } catch (err) {
+      setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
+      setLoadingLocation(false);
+    }
+  };
 
+  useEffect(() => {
     fetchLocationAndSort();
   }, []);
+
+  const refreshLocation = () => {
+    setLoadingLocation(true);
+    fetchLocationAndSort();
+  };
 
   const categories = [
     "All Categories",
@@ -432,7 +444,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         {/* SHOWING NEARBY RESTAURANTS */}
         <View style={styles.nearbyHeader}>
-          <Text style={styles.nearbyTitle}>Popular restaurants nearby</Text>
+          <View>
+            <Text style={styles.nearbyTitle}>Popular restaurants nearby</Text>
+            <TouchableOpacity onPress={refreshLocation}>
+              <Text style={styles.refreshText}>🔄 Tap to refresh location</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={() => navigation.navigate("AllRestaurants")}>
             <Text style={styles.seeAll}>See all</Text>
           </TouchableOpacity>
@@ -803,6 +820,12 @@ const styles = StyleSheet.create({
     color: "#dc2626",
     fontWeight: "600",
     fontSize: 14,
+  },
+  refreshText: {
+    color: "#666",
+    fontSize: 12,
+    marginTop: 4,
+    textDecorationLine: "underline",
   },
   restaurantScroll: {
     marginHorizontal: -5,
