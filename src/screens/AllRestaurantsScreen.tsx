@@ -230,27 +230,41 @@ export default function AllRestaurantsScreen() {
   useEffect(() => {
     setRestaurants(ALL_RESTAURANTS_DATA);
 
-    // Apply initial filters if params exist
     const q = route.params?.searchQuery || "";
     const cat = route.params?.category || "All Categories";
-    
     setSearch(q);
     setCategory(cat);
 
-    // Try to get user location for distance sorting
-    Geolocation.getCurrentPosition(
-      (pos) => {
-        const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-        setUserLocation(coords);
-        updateResults(q, cat, coords);
-        setLoading(false);
-      },
-      () => {
+    const initLocation = async () => {
+      let hasPermission = true;
+      if (Platform.OS === "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
+      }
+
+      if (hasPermission) {
+        Geolocation.getCurrentPosition(
+          (pos) => {
+            const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+            setUserLocation(coords);
+            updateResults(q, cat, coords);
+            setLoading(false);
+          },
+          () => {
+            updateResults(q, cat, null);
+            setLoading(false);
+          },
+          { enableHighAccuracy: true, timeout: 5000 }
+        );
+      } else {
         updateResults(q, cat, null);
         setLoading(false);
-      },
-      { enableHighAccuracy: true, timeout: 5000 }
-    );
+      }
+    };
+
+    initLocation();
   }, [route.params]);
 
   const updateResults = (searchText: string, selectedCat: string, uLoc: LocationCoords | null) => {
@@ -266,12 +280,18 @@ export default function AllRestaurantsScreen() {
       return matchSearch && matchCategory;
     });
 
-    if (uLoc) {
+    if (uLoc && uLoc.latitude && uLoc.longitude) {
       result = result.sort((a, b) => {
-        if (!a.latitude || !a.longitude) return 1;
-        if (!b.latitude || !b.longitude) return -1;
-        const distA = getDistance(uLoc.latitude, uLoc.longitude, a.latitude, a.longitude);
-        const distB = getDistance(uLoc.latitude, uLoc.longitude, b.latitude, b.longitude);
+        const latA = a.latitude;
+        const lonA = a.longitude;
+        const latB = b.latitude;
+        const lonB = b.longitude;
+
+        if (latA === undefined || lonA === undefined) return 1;
+        if (latB === undefined || lonB === undefined) return -1;
+
+        const distA = getDistance(uLoc.latitude, uLoc.longitude, latA, lonA);
+        const distB = getDistance(uLoc.latitude, uLoc.longitude, latB, lonB);
         return distA - distB;
       });
     }
