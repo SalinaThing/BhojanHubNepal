@@ -43,9 +43,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
@@ -78,12 +78,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
             setLoadingLocation(false);
           },
-          { 
-            enableHighAccuracy: true, 
-            timeout: 15000, 
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
             maximumAge: 10000,
             forceRequestLocation: true,
-            showLocationDialog: true 
+            showLocationDialog: true
           }
         );
       } else {
@@ -124,7 +124,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     (r) => selectedCategory === "All Categories" || r.category === selectedCategory
   );
 
-  
+
   const handleSearch = () => {
     if (!searchLocation.trim()) {
       Alert.alert("Please enter a location first!");
@@ -132,9 +132,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
 
     console.log("🔍 Navigating to results for:", searchLocation);
-    navigation.navigate("AllRestaurants", { 
+    navigation.navigate("AllRestaurants", {
       searchQuery: searchLocation,
-      category: selectedCategory 
+      category: selectedCategory
     });
   };
 
@@ -179,13 +179,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Function to render restaurant cards
   const renderRestaurantCards = () => {
     const displayRestaurants = showAllRestaurants ? filteredRestaurants : filteredRestaurants.slice(0, 4);
-    
+
     if (showAllRestaurants) {
       return (
         <View style={styles.gridContainer}>
           {displayRestaurants.map((restaurant) => (
-            <TouchableOpacity 
-              key={restaurant.id} 
+            <TouchableOpacity
+              key={restaurant.id}
               style={styles.restaurantGridCard}
               onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: restaurant.id, name: restaurant.title })}
             >
@@ -224,8 +224,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           style={styles.restaurantScroll}
         >
           {displayRestaurants.map((restaurant) => (
-            <TouchableOpacity 
-              key={restaurant.id} 
+            <TouchableOpacity
+              key={restaurant.id}
               style={styles.restaurantCard}
               onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: restaurant.id, name: restaurant.title })}
             >
@@ -262,7 +262,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Function to render partner cards
   const renderPartnerCards = () => {
     const displayPartners = showAllPartners ? partners : partners.slice(0, 4);
-    
+
     if (showAllPartners) {
       return (
         <View style={styles.gridContainer}>
@@ -295,7 +295,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Function to render beverage brands
   const renderBeverageBrands = () => {
     const displayBrands = showAllBrands ? beverageBrands : beverageBrands.slice(0, 4);
-    
+
     if (showAllBrands) {
       return (
         <View style={styles.gridContainer}>
@@ -330,13 +330,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Function to render food services
   const renderFoodServices = () => {
     const displayServices = showAllServices ? foodServices : foodServices.slice(0, 4);
-    
+
     if (showAllServices) {
       return (
         <View style={styles.gridContainer}>
           {displayServices.map((service) => (
-            <TouchableOpacity 
-              key={service.id} 
+            <TouchableOpacity
+              key={service.id}
               style={styles.serviceGridCard}
               onPress={() => navigation.navigate("AllRestaurants")}
             >
@@ -353,8 +353,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       return (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
           {displayServices.map((service) => (
-            <TouchableOpacity 
-              key={service.id} 
+            <TouchableOpacity
+              key={service.id}
               style={styles.serviceCard}
               onPress={() => navigation.navigate("AllRestaurants")}
             >
@@ -423,17 +423,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       {/* NEAREST RESTAURANTS SECTION */}
       <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Restaurants Near You</Text>
-        </View>
-        <Text style={styles.sectionDescription}>
-          Discover the best dining experiences in your area
-        </Text>
 
         {/* CATEGORY DROPDOWN */}
         <View style={styles.categorySection}>
           <Text style={styles.categoryTitle}>Food Category</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.dropdownButton}
             onPress={() => setIsCategoryModalVisible(true)}
           >
@@ -496,83 +490,83 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         {renderBeverageBrands()}
       </View>
 
-        {/* ✅ POPULAR RESTAURANTS BY LOCATION */}
-        <View style={styles.section}>
-          <Text style={styles.subTitle}>Featured Restaurants Across Nepal 🗺️</Text>
-          
-          <View style={styles.locationSection}>
-            <Text style={styles.locationTitle}>📍 Valley</Text>
-            <View style={styles.restaurantList}>
-              {[
-                { id: "1", name: "Bhojan Griha", desc: "Traditional Newari Thali in Dillibazzar, Ktm" },
-                { id: "13", name: "Nepali Chulo", desc: "Classic Nepali dishes in Jhamsikhel, Lalitpur" },
-                { id: "10", name: "Korea Town", desc: "Authentic Korean BBQ in Thamel, Ktm" },
-                { id: "14", name: "Yin Yang", desc: "Thai cuisine with river view" },
-                { id: "15", name: "Momo Magic", desc: "Best Tibetan momos in town" },
-                { id: "16", name: "Koto Japanese", desc: "Premium sushi and teppanyaki" },
-              ].map((res) => (
-                <TouchableOpacity 
-                  key={res.id} 
-                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
-                >
-                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
+      {/* ✅ POPULAR RESTAURANTS BY LOCATION */}
+      <View style={styles.section}>
+        <Text style={styles.subTitle}>Featured Restaurants Across Nepal 🗺️</Text>
 
-          <View style={styles.locationSection}>
-            <Text style={styles.locationTitle}>📍 Pokhara</Text>
-            <View style={styles.restaurantList}>
-              {[
-                { id: "17", name: "Lakeside Thai", desc: "Thai food with lake view" },
-                { id: "7", name: "Korean Garden", desc: "Traditional Korean dishes" },
-                { id: "3", name: "Chinese Dragon", desc: "Authentic Chinese flavors" },
-              ].map((res) => (
-                <TouchableOpacity 
-                  key={res.id} 
-                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
-                >
-                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.locationSection}>
-            <Text style={styles.locationTitle}>📍 Chitwan</Text>
-            <View style={styles.restaurantList}>
-              {[
-                { id: "18", name: "Jungle Thai", desc: "Exotic Thai cuisine" },
-                { id: "19", name: "Sauraha Chinese", desc: "Chinese food near wildlife" },
-              ].map((res) => (
-                <TouchableOpacity 
-                  key={res.id} 
-                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
-                >
-                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.locationSection}>
-            <Text style={styles.locationTitle}>📍 Lumbini</Text>
-            <View style={styles.restaurantList}>
-              {[
-                { id: "20", name: "Korean Temple Food", desc: "Buddhist cuisine experience" },
-                { id: "21", name: "International Peace Cafe", desc: "Multi-cuisine options" },
-              ].map((res) => (
-                <TouchableOpacity 
-                  key={res.id} 
-                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
-                >
-                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+        <View style={styles.locationSection}>
+          <Text style={styles.locationTitle}>📍 Valley</Text>
+          <View style={styles.restaurantList}>
+            {[
+              { id: "1", name: "Bhojan Griha", desc: "Traditional Newari Thali in Dillibazzar, Ktm" },
+              { id: "13", name: "Nepali Chulo", desc: "Classic Nepali dishes in Jhamsikhel, Lalitpur" },
+              { id: "10", name: "Korea Town", desc: "Authentic Korean BBQ in Thamel, Ktm" },
+              { id: "14", name: "Yin Yang", desc: "Thai cuisine with river view" },
+              { id: "15", name: "Momo Magic", desc: "Best Tibetan momos in town" },
+              { id: "16", name: "Koto Japanese", desc: "Premium sushi and teppanyaki" },
+            ].map((res) => (
+              <TouchableOpacity
+                key={res.id}
+                onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+              >
+                <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
+
+        <View style={styles.locationSection}>
+          <Text style={styles.locationTitle}>📍 Pokhara</Text>
+          <View style={styles.restaurantList}>
+            {[
+              { id: "17", name: "Lakeside Thai", desc: "Thai food with lake view" },
+              { id: "7", name: "Korean Garden", desc: "Traditional Korean dishes" },
+              { id: "3", name: "Chinese Dragon", desc: "Authentic Chinese flavors" },
+            ].map((res) => (
+              <TouchableOpacity
+                key={res.id}
+                onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+              >
+                <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.locationSection}>
+          <Text style={styles.locationTitle}>📍 Chitwan</Text>
+          <View style={styles.restaurantList}>
+            {[
+              { id: "18", name: "Jungle Thai", desc: "Exotic Thai cuisine" },
+              { id: "19", name: "Sauraha Chinese", desc: "Chinese food near wildlife" },
+            ].map((res) => (
+              <TouchableOpacity
+                key={res.id}
+                onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+              >
+                <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.locationSection}>
+          <Text style={styles.locationTitle}>📍 Lumbini</Text>
+          <View style={styles.restaurantList}>
+            {[
+              { id: "20", name: "Korean Temple Food", desc: "Buddhist cuisine experience" },
+              { id: "21", name: "International Peace Cafe", desc: "Multi-cuisine options" },
+            ].map((res) => (
+              <TouchableOpacity
+                key={res.id}
+                onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+              >
+                <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </View>
 
       {/* FOOD CATEGORIES */}
       <View style={styles.section}>
@@ -689,7 +683,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
+    textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10
   },
   heroSubtitle: {
@@ -1204,53 +1198,53 @@ const styles = StyleSheet.create({
     color: "#666",
   },
 
-   // ✅ LOCATION SECTIONS
-  locationSection: { 
-    backgroundColor: "#f8fafc", 
-    padding: 15, 
-    borderRadius: 12, 
+  // ✅ LOCATION SECTIONS
+  locationSection: {
+    backgroundColor: "#f8fafc",
+    padding: 15,
+    borderRadius: 12,
     marginBottom: 15,
     borderLeftWidth: 4,
     borderLeftColor: "#dc2626"
   },
-  locationTitle: { 
-    fontSize: 18, 
-    fontWeight: "700", 
-    color: "#111", 
-    marginBottom: 10 
+  locationTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 10
   },
   restaurantList: { paddingLeft: 10 },
-  restaurantItem: { 
-    fontSize: 14, 
-    lineHeight: 20, 
-    color: "#555", 
-    marginBottom: 5 
+  restaurantItem: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#555",
+    marginBottom: 5
   },
 
-  featureGrid: { 
-    flexDirection: "row", 
-    flexWrap: "wrap", 
-    justifyContent: "space-between", 
-    marginTop: 15 
+  featureGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginTop: 15
   },
-  featureItem: { 
-    width: width / 2 - 25, 
-    backgroundColor: "#fff", 
-    borderRadius: 12, 
-    padding: 15, 
-    marginBottom: 15, 
-    elevation: 2, 
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.1, 
-    shadowRadius: 4, 
-    borderWidth: 1, 
-    borderColor: "#fca5a5" 
+  featureItem: {
+    width: width / 2 - 25,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: "#fca5a5"
   },
   featureIcon: { fontSize: 24, marginBottom: 8 },
   featureTitle: { fontSize: 16, fontWeight: "700", marginBottom: 5, color: "#111" },
   featureDesc: { fontSize: 13, color: "#666", lineHeight: 18 },
-   bold: { fontWeight: "600", color: "#111" },
+  bold: { fontWeight: "600", color: "#111" },
   subTitle: { fontSize: 22, fontWeight: "700", marginTop: 25, marginBottom: 12, color: "#dc2626" },
 });
 
