@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -50,7 +50,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return R * c;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchLocationAndSort = async () => {
       try {
         let hasPermission = true;
@@ -1169,6 +1169,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#999",
     textAlign: "center",
+  },
+  loaderContainer: {
+    padding: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: "#666",
   },
 
    // ✅ LOCATION SECTIONS
