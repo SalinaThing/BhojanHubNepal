@@ -520,46 +520,82 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       </View>
 
         {/* ✅ POPULAR RESTAURANTS BY LOCATION */}
-              <View style={styles.section}>
-                <Text style={styles.subTitle}>Featured Restaurants Across Nepal 🗺️</Text>
-                
-                <View style={styles.locationSection}>
-                  <Text style={styles.locationTitle}>📍 Valley</Text>
-                  <View style={styles.restaurantList}>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Bhojan Griha</Text> - Traditional Newari Thali in Dillibazzar, Ktm</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Nepali Chulo</Text> - Classic Nepali dishes in Jhamsikhel, Lalitpur</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Korea Town</Text> - Authentic Korean BBQ in Thamel, Ktm</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Yin Yang</Text> - Thai cuisine with river view</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Momo Magic</Text> - Best Tibetan momos in town</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Koto Japanese</Text> - Premium sushi and teppanyaki</Text>
-                  </View>
-                </View>
-      
-                <View style={styles.locationSection}>
-                  <Text style={styles.locationTitle}>📍 Pokhara</Text>
-                  <View style={styles.restaurantList}>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Lakeside Thai</Text> - Thai food with lake view</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Korean Garden</Text> - Traditional Korean dishes</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Chinese Dragon</Text> - Authentic Chinese flavors</Text>
-                  </View>
-                </View>
-      
-                <View style={styles.locationSection}>
-                  <Text style={styles.locationTitle}>📍 Chitwan</Text>
-                  <View style={styles.restaurantList}>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Jungle Thai</Text> - Exotic Thai cuisine</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Sauraha Chinese</Text> - Chinese food near wildlife</Text>
-                  </View>
-                </View>
-      
-                <View style={styles.locationSection}>
-                  <Text style={styles.locationTitle}>📍 Lumbini</Text>
-                  <View style={styles.restaurantList}>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>Korean Temple Food</Text> - Buddhist cuisine experience</Text>
-                    <Text style={styles.restaurantItem}>• <Text style={styles.bold}>International Peace Cafe</Text> - Multi-cuisine options</Text>
-                  </View>
-                </View>
-              </View>
+        <View style={styles.section}>
+          <Text style={styles.subTitle}>Featured Restaurants Across Nepal 🗺️</Text>
+          
+          <View style={styles.locationSection}>
+            <Text style={styles.locationTitle}>📍 Valley</Text>
+            <View style={styles.restaurantList}>
+              {[
+                { id: "1", name: "Bhojan Griha", desc: "Traditional Newari Thali in Dillibazzar, Ktm" },
+                { id: "13", name: "Nepali Chulo", desc: "Classic Nepali dishes in Jhamsikhel, Lalitpur" },
+                { id: "10", name: "Korea Town", desc: "Authentic Korean BBQ in Thamel, Ktm" },
+                { id: "14", name: "Yin Yang", desc: "Thai cuisine with river view" },
+                { id: "15", name: "Momo Magic", desc: "Best Tibetan momos in town" },
+                { id: "16", name: "Koto Japanese", desc: "Premium sushi and teppanyaki" },
+              ].map((res) => (
+                <TouchableOpacity 
+                  key={res.id} 
+                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+                >
+                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.locationSection}>
+            <Text style={styles.locationTitle}>📍 Pokhara</Text>
+            <View style={styles.restaurantList}>
+              {[
+                { id: "17", name: "Lakeside Thai", desc: "Thai food with lake view" },
+                { id: "7", name: "Korean Garden", desc: "Traditional Korean dishes" },
+                { id: "3", name: "Chinese Dragon", desc: "Authentic Chinese flavors" },
+              ].map((res) => (
+                <TouchableOpacity 
+                  key={res.id} 
+                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+                >
+                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.locationSection}>
+            <Text style={styles.locationTitle}>📍 Chitwan</Text>
+            <View style={styles.restaurantList}>
+              {[
+                { id: "18", name: "Jungle Thai", desc: "Exotic Thai cuisine" },
+                { id: "19", name: "Sauraha Chinese", desc: "Chinese food near wildlife" },
+              ].map((res) => (
+                <TouchableOpacity 
+                  key={res.id} 
+                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+                >
+                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.locationSection}>
+            <Text style={styles.locationTitle}>📍 Lumbini</Text>
+            <View style={styles.restaurantList}>
+              {[
+                { id: "20", name: "Korean Temple Food", desc: "Buddhist cuisine experience" },
+                { id: "21", name: "International Peace Cafe", desc: "Multi-cuisine options" },
+              ].map((res) => (
+                <TouchableOpacity 
+                  key={res.id} 
+                  onPress={() => navigation.navigate("RestaurantDetail", { restaurantId: res.id, name: res.name })}
+                >
+                  <Text style={styles.restaurantItem}>• <Text style={styles.bold}>{res.name}</Text> - {res.desc}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
 
       {/* FOOD CATEGORIES */}
       <View style={styles.section}>
