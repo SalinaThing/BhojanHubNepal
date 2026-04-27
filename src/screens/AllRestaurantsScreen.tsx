@@ -236,29 +236,40 @@ export default function AllRestaurantsScreen() {
     setCategory(cat);
 
     const initLocation = async () => {
-      let hasPermission = true;
-      if (Platform.OS === "android") {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        );
-        hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
-      }
+      try {
+        let hasPermission = true;
+        if (Platform.OS === "android") {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+          );
+          hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
+        }
 
-      if (hasPermission) {
-        Geolocation.getCurrentPosition(
-          (pos) => {
-            const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-            setUserLocation(coords);
-            updateResults(q, cat, coords);
-            setLoading(false);
-          },
-          () => {
-            updateResults(q, cat, null);
-            setLoading(false);
-          },
-          { enableHighAccuracy: true, timeout: 5000 }
-        );
-      } else {
+        if (hasPermission) {
+          Geolocation.getCurrentPosition(
+            (pos) => {
+              if (pos && pos.coords) {
+                const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+                setUserLocation(coords);
+                updateResults(q, cat, coords);
+              } else {
+                updateResults(q, cat, null);
+              }
+              setLoading(false);
+            },
+            (error) => {
+              console.log("Location Error:", error);
+              updateResults(q, cat, null);
+              setLoading(false);
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000, forceRequestLocation: true }
+          );
+        } else {
+          updateResults(q, cat, null);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.log("initLocation Error:", err);
         updateResults(q, cat, null);
         setLoading(false);
       }
@@ -280,15 +291,15 @@ export default function AllRestaurantsScreen() {
       return matchSearch && matchCategory;
     });
 
-    if (uLoc && uLoc.latitude && uLoc.longitude) {
+    if (uLoc && typeof uLoc.latitude === 'number' && typeof uLoc.longitude === 'number') {
       result = result.sort((a, b) => {
         const latA = a.latitude;
         const lonA = a.longitude;
         const latB = b.latitude;
         const lonB = b.longitude;
 
-        if (latA === undefined || lonA === undefined) return 1;
-        if (latB === undefined || lonB === undefined) return -1;
+        if (typeof latA !== 'number' || typeof lonA !== 'number') return 1;
+        if (typeof latB !== 'number' || typeof lonB !== 'number') return -1;
 
         const distA = getDistance(uLoc.latitude, uLoc.longitude, latA, lonA);
         const distB = getDistance(uLoc.latitude, uLoc.longitude, latB, lonB);
