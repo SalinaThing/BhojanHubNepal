@@ -12,7 +12,11 @@ import {
   TextInput,
   ActivityIndicator,
   Image,
+  Platform,
+  PermissionsAndroid,
 } from "react-native";
+import Geolocation from "react-native-geolocation-service";
+import { ALL_RESTAURANTS_DATA, Restaurant } from "../data/restaurants";
 
 const { width } = Dimensions.get("window");
 
@@ -42,6 +46,65 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [showAllServices, setShowAllServices] = useState(false);
   const [searchLocation, setSearchLocation] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
+  const [nearbyRestaurants, setNearbyRestaurants] = useState<Restaurant[]>([]);
+  const [loadingLocation, setLoadingLocation] = useState(true);
+
+  const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  React.useEffect(() => {
+    const fetchLocationAndSort = async () => {
+      try {
+        let hasPermission = true;
+        if (Platform.OS === "android") {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+          );
+          hasPermission = granted === PermissionsAndroid.RESULTS.GRANTED;
+        }
+
+        if (hasPermission) {
+          Geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              const sorted = [...ALL_RESTAURANTS_DATA].sort((a, b) => {
+                const distA = getDistance(latitude, longitude, a.latitude, a.longitude);
+                const distB = getDistance(latitude, longitude, b.latitude, b.longitude);
+                return distA - distB;
+              });
+              setNearbyRestaurants(sorted.slice(0, 6)); // Show top 6 nearest
+              setLoadingLocation(false);
+            },
+            () => {
+              // On error, just show the default list
+              setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
+              setLoadingLocation(false);
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 }
+          );
+        } else {
+          setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
+          setLoadingLocation(false);
+        }
+      } catch (err) {
+        setNearbyRestaurants(ALL_RESTAURANTS_DATA.slice(0, 6));
+        setLoadingLocation(false);
+      }
+    };
+
+    fetchLocationAndSort();
+  }, []);
 
   const categories = [
     "All Categories",
@@ -55,107 +118,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     "Beverages",
   ];
 
-  // Dummy restaurant data
-  const restaurants: Restaurant[] = [
-    {
-      id: "1",
-      title: "Burger Palace",
-      address: "123 Main Street, Food District",
-      contact_phone: "+1-555-0123",
-      category: "Fast Food",
-      rating: 4.5,
-      deliveryTime: "20-30 min",
-      priceRange: "Rs.280 - Rs. 400",
-      image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 1.2
-    },
-    {
-      id: "2",
-      title: "Pizza Italia",
-      address: "456 Italian Avenue",
-      contact_phone: "+1-555-0124",
-      category: "Italian",
-      rating: 4.7,
-      deliveryTime: "25-35 min",
-      priceRange: "Rs.1200 - Rs. 1500",
-      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 2.1
-    },
-    {
-      id: "3",
-      title: "Dragon Chinese",
-      address: "789 Chinatown Road",
-      contact_phone: "+1-555-0125",
-      category: "Chinese",
-      rating: 4.3,
-      deliveryTime: "30-40 min",
-      priceRange: "Rs.300 - Rs. 400",
-      image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 0.8
-    },
-    {
-      id: "4",
-      title: "Spice India",
-      address: "321 Curry Lane",
-      contact_phone: "+1-555-0126",
-      category: "Indian",
-      rating: 4.6,
-      deliveryTime: "35-45 min",
-      priceRange: "Rs.350 - Rs. 450",
-      image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 1.5
-    },
-    {
-      id: "5",
-      title: "Tokyo Sushi",
-      address: "654 Sushi Street",
-      contact_phone: "+1-555-0127",
-      category: "Japanese",
-      rating: 4.8,
-      deliveryTime: "40-50 min",
-      priceRange: "Rs.400 - Rs.550",
-      image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 3.2
-    },
-    {
-      id: "6",
-      title: "Taco Fiesta",
-      address: "987 Mexican Boulevard",
-      contact_phone: "+1-555-0128",
-      category: "Mexican",
-      rating: 4.4,
-      deliveryTime: "25-35 min",
-      priceRange: "Rs.120 - Rs. 400",
-      image: "https://images.unsplash.com/photo-1565299585323-38174c13fae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 1.8
-    },
-    {
-      id: "7",
-      title: "Korean Garden",
-      address: "Lakeside, Pokhara",
-      contact_phone: "+977-61-123456",
-      category: "Japanese",
-      rating: 4.9,
-      deliveryTime: "30-45 min",
-      priceRange: "Rs.600 - Rs. 1200",
-      image: "https://images.unsplash.com/photo-1553163147-622ab57be1c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 0.5
-    },
-    {
-      id: "8",
-      title: "Himalayan Java",
-      address: "Heritage Plaza, Kamaladi",
-      contact_phone: "+977-1-4433221",
-      category: "Beverages",
-      rating: 4.6,
-      deliveryTime: "10-20 min",
-      priceRange: "Rs.250 - Rs. 600",
-      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-      distance: 0.3
-    }
-  ];
-
-  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>(restaurants);
+  // Category Filtering logic below
+  // Logic replaced by nearbyRestaurants state
+  // Filtering for category section
+  const filteredRestaurants = nearbyRestaurants.filter(
+    (r) => selectedCategory === "All Categories" || r.category === selectedCategory
+  );
 
   
   const handleSearch = () => {
@@ -484,9 +452,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </View>
 
         {/* RESTAURANT LIST */}
-        {filteredRestaurants.length === 0 ? (
+        {loadingLocation ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#dc2626" />
+            <Text style={styles.loaderText}>Finding nearest restaurants...</Text>
+          </View>
+        ) : filteredRestaurants.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No restaurants found. Try searching for a different location.</Text>
+            <Text style={styles.emptyText}>No restaurants found in this category.</Text>
           </View>
         ) : (
           renderRestaurantCards()

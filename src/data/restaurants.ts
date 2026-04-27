@@ -1,0 +1,192 @@
+export type Restaurant = {
+  id: string;
+  title: string;
+  address: string;
+  contact_phone: string;
+  category: string;
+  rating: number;
+  deliveryTime: string;
+  priceRange: string;
+  image: string | null;
+  latitude: number;
+  longitude: number;
+  description?: string;
+};
+
+export const ALL_RESTAURANTS_DATA: Restaurant[] = [
+  // BOUDHA AREA
+  {
+    id: "1",
+    title: "Roadhouse Cafe Boudha",
+    address: "Boudha Stupa, Kathmandu",
+    contact_phone: "01-4470774",
+    category: "Italian",
+    rating: 4.8,
+    deliveryTime: "25-35 min",
+    priceRange: "Rs.800 - Rs.1500",
+    latitude: 27.7215,
+    longitude: 85.3620,
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Famous for wood-fired pizzas with a stunning view of the Boudha Stupa.",
+  },
+  {
+    id: "2",
+    title: "Garden Kitchen Boudha",
+    address: "Boudha Gate, Kathmandu",
+    contact_phone: "01-4488990",
+    category: "Chinese",
+    rating: 4.5,
+    deliveryTime: "20-30 min",
+    priceRange: "Rs.400 - Rs.800",
+    latitude: 27.7220,
+    longitude: 85.3610,
+    image: "https://images.unsplash.com/photo-1552611052-33e04de081de?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Authentic Tibetan and Chinese cuisine in a peaceful garden setting.",
+  },
+  {
+    id: "3",
+    title: "Sakura Japanese Restaurant",
+    address: "Boudha Pipal Bot, Kathmandu",
+    contact_phone: "01-4499887",
+    category: "Japanese",
+    rating: 4.7,
+    deliveryTime: "30-45 min",
+    priceRange: "Rs.600 - Rs.1200",
+    latitude: 27.7210,
+    longitude: 85.3630,
+    image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Fresh sushi and traditional Japanese dishes near the Stupa.",
+  },
+
+  // PATAN / LALITPUR AREA
+  {
+    id: "4",
+    title: "Dhokaima Cafe",
+    address: "Patan Dhoka, Lalitpur",
+    contact_phone: "01-5522113",
+    category: "Continental",
+    rating: 4.6,
+    deliveryTime: "25-40 min",
+    priceRange: "Rs.500 - Rs.1200",
+    latitude: 27.6790,
+    longitude: 85.3200,
+    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "A historic spot known for its quiet ambiance and international menu.",
+  },
+  {
+    id: "5",
+    title: "The Local Patan",
+    address: "Jhamsikhel, Lalitpur",
+    contact_phone: "01-5533445",
+    category: "Nepali",
+    rating: 4.4,
+    deliveryTime: "20-30 min",
+    priceRange: "Rs.300 - Rs.700",
+    latitude: 27.6740,
+    longitude: 85.3120,
+    image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Modern twist on traditional Nepali snacks and Newari delicacies.",
+  },
+  {
+    id: "6",
+    title: "Higher Ground Patan",
+    address: "Nakhu, Lalitpur",
+    contact_phone: "01-5544332",
+    category: "Bakery",
+    rating: 4.7,
+    deliveryTime: "15-25 min",
+    priceRange: "Rs.200 - Rs.500",
+    latitude: 27.6600,
+    longitude: 85.3100,
+    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Community cafe serving the best coffee and fresh cakes in Patan.",
+  },
+
+  // KAMALPOKHARI AREA
+  {
+    id: "7",
+    title: "Bajeko Sekuwa",
+    address: "Kamalpokhari, Kathmandu",
+    contact_phone: "01-4433556",
+    category: "Nepali",
+    rating: 4.5,
+    deliveryTime: "20-35 min",
+    priceRange: "Rs.400 - Rs.900",
+    latitude: 27.7100,
+    longitude: 85.3260,
+    image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Nepal's most famous Sekuwa (grilled meat) destination.",
+  },
+  {
+    id: "8",
+    title: "Alice Restaurant",
+    address: "City Center, Kamalpokhari",
+    contact_phone: "01-4422110",
+    category: "Chinese",
+    rating: 4.3,
+    deliveryTime: "30-40 min",
+    priceRange: "Rs.500 - Rs.1000",
+    latitude: 27.7110,
+    longitude: 85.3250,
+    image: "https://images.unsplash.com/photo-1525755662778-989d0524087e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Great multi-cuisine dining experience inside City Center mall.",
+  },
+  {
+    id: "9",
+    title: "Himalayan Java Kamaladi",
+    address: "Kamaladi, Kathmandu",
+    contact_phone: "01-4433221",
+    category: "Cafe",
+    rating: 4.8,
+    deliveryTime: "15-20 min",
+    priceRange: "Rs.300 - Rs.600",
+    latitude: 27.7080,
+    longitude: 85.3240,
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "The pioneer of coffee culture in Nepal, perfect for meetings.",
+  },
+
+  // THAMEL AREA
+  {
+    id: "10",
+    title: "Fire and Ice Pizzeria",
+    address: "Thamel, Kathmandu",
+    contact_phone: "01-4250210",
+    category: "Italian",
+    rating: 4.9,
+    deliveryTime: "30-45 min",
+    priceRange: "Rs.900 - Rs.1800",
+    latitude: 27.7150,
+    longitude: 85.3120,
+    image: "https://images.unsplash.com/photo-1574071318508-1cdbad80ad38?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Legendary Italian pizza and gelato in the heart of Thamel.",
+  },
+  {
+    id: "11",
+    title: "OR2K",
+    address: "Mandala Street, Thamel",
+    contact_phone: "01-4422097",
+    category: "Fast Food",
+    rating: 4.7,
+    deliveryTime: "25-40 min",
+    priceRange: "Rs.600 - Rs.1100",
+    latitude: 27.7160,
+    longitude: 85.3110,
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Famous vegetarian and middle-eastern cuisine with floor seating.",
+  },
+  {
+    id: "12",
+    title: "Everest Steak House",
+    address: "Chaksibari, Thamel",
+    contact_phone: "01-4412263",
+    category: "Continental",
+    rating: 4.4,
+    deliveryTime: "35-50 min",
+    priceRange: "Rs.1000 - Rs.2500",
+    latitude: 27.7145,
+    longitude: 85.3130,
+    image: "https://images.unsplash.com/photo-1546241072-48010ad28c2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    description: "Serving huge, juicy steaks for over 20 years in Kathmandu.",
+  }
+];
